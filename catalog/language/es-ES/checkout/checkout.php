@@ -1,5 +1,5 @@
 <?php
-$_['heading_title'] 	=  'Revisa';
+$_['heading_title'] 	=  'Pagar';
 $_['text_cart'] 	=  'Carrito de compras';
 $_['text_checkout_option'] 	=  'Paso %s: Opciones de pago';
 $_['text_checkout_account'] 	=  'Paso %s: Cuenta & amp; Detalles de facturación';

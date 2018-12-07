@@ -13,7 +13,7 @@ $_['text_option'] 	=  'Opciones Disponibles';
 $_['text_minimum'] 	=  'Este producto tiene una cantidad mínima de %s';
 $_['text_reviews'] 	=  ' %s opiniones';
 $_['text_write'] 	=  'Escribe una reseña';
-$_['text_login'] 	=  'Por favor, <a href="%s"> iniciar sesión </a> o <a href="%s"> registrarse </a> para revisar';
+$_['text_login'] 	=  'Por favor, <a href="%s"> iniciar sesión </a> o <a href="%s"> registrarse </a> para pagar';
 $_['text_no_reviews'] 	=  'No hay comentarios para este producto.';
 $_['text_note'] 	=  '<Span class = "text-danger"> Nota: </ span> ¡HTML no está traducido!';
 $_['text_success'] 	=  'Gracias por su comentario. Se ha enviado al webmaster para su aprobación.';

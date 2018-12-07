@@ -10,6 +10,6 @@ $_['text_order'] 	=  'Historial de pedidos';
 $_['text_transaction'] 	=  'Actas';
 $_['text_download'] 	=  'Descargas';
 $_['text_logout'] 	=  'Cerrar sesión';
-$_['text_checkout'] 	=  'Revisa';
+$_['text_checkout'] 	=  'Pagar';
 $_['text_search'] 	=  'Buscar';
 $_['text_all'] 	=  'Mostrar todo';
