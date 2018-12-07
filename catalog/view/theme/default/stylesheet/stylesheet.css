@@ -33,10 +33,13 @@ h6 {
 	font-size: 10.2px;
 }
 a {
-	color: #23a1d1;
+	color: #156837;
 }
 a:hover {
 	text-decoration: none;
+	color:#93d50a;
+
+
 }
 legend {
 	font-size: 18px;
@@ -73,8 +76,8 @@ div.required .control-label:before {
 .dropdown-menu li > a:hover {
 	text-decoration: none;
 	color: #ffffff;
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
+	background-color: #ff9900;
+	background-image: linear-gradient(to bottom, #ff9900, #ff9900);
 	background-repeat: repeat-x;
 }
 /* top */
@@ -96,8 +99,8 @@ div.required .control-label:before {
 #top #form-language .language-select:hover {
 	text-shadow: none;
 	color: #ffffff;
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
+	background-color: #ff9900;
+	background-image: linear-gradient(to bottom, #ff9900, #ff9900);
 	background-repeat: repeat-x;
 }
 #top .btn-link, #top-links li, #top-links a {
@@ -192,17 +195,17 @@ div.required .control-label:before {
 }
 /* menu */
 #menu {
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
+	background-color: #ff9900;
+	background-image: linear-gradient(to bottom, #ff9900, #ff9900);
 	background-repeat: repeat-x;
-	border-color: #1f90bb #1f90bb #145e7a;
+	border-color: #ff9900#ff9900#ff9900;
 	min-height: 40px;
 }
 #menu .nav > li > a {
-	color: #fff;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	color: #000000;
+	font-weight: bold
 	padding: 10px 15px 10px 15px;
-	min-height: 15px;
+	min-height: 20px;
 	background-color: transparent;
 }
 #menu .nav > li > a:hover, #menu .nav > li.open > a {
@@ -242,8 +245,8 @@ div.required .control-label:before {
 #menu .see-all:hover, #menu .see-all:focus {
 	text-decoration: none;
 	color: #ffffff;
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
+	background-color: #ff9900;
+	background-image: linear-gradient(to bottom, #ff9900, #ff9900);
 	background-repeat: repeat-x;
 }
 #menu #category {
@@ -261,14 +264,14 @@ div.required .control-label:before {
 	color: #FFF;
 	padding: 2px 18px;
 	float: right;
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
+	background-color: #ff9900	#ff9900;
+	background-image: linear-gradient(to bottom, #ff9900, #ff9900);
 	background-repeat: repeat-x;
-	border-color: #1f90bb #1f90bb #145e7a;
+	border-color: #ff9900 #ff9900bb #ff9900;
 }
 #menu .btn-navbar:hover, #menu .btn-navbar:focus, #menu .btn-navbar:active, #menu .btn-navbar.disabled, #menu .btn-navbar[disabled] {
 	color: #ffffff;
-	background-color: #229ac8;
+	background-color: #ff9900;
 }
 @media (min-width: 768px) {
 	#menu .dropdown:hover .dropdown-menu {
@@ -313,7 +316,7 @@ div.required .control-label:before {
 footer {
 	margin-top: 30px;
 	padding-top: 30px;
-	background-color: #303030;
+	background-color: #93d50a;
 	border-top: 1px solid #ddd;
 	color: #e2e2e2;
 }
@@ -322,16 +325,16 @@ footer hr {
 	border-bottom: 1px solid #666;
 }
 footer a {
-	color: #ccc;
+	color: #000000;
 }
 footer a:hover {
-	color: #fff;
+	color: #000000;
 }
 footer h5 {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 13px;
 	font-weight: bold;
-	color: #fff;
+	color: #000000;
 }
 /* alert */
 .alert {
@@ -416,16 +419,17 @@ footer h5 {
 	border-color: #dddddd #dddddd #b3b3b3 #b7b7b7;
 }
 .btn-primary {
-	color: #ffffff;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
-	background-repeat: repeat-x;
-	border-color: #1f90bb #1f90bb #145e7a;
+	color: #000000;
+	background-color: #ff9900;
+	background-image: linear-gradient(to bottom, #ff9900, #ff9900);
+	background-repeat:repeat-x;
+	border-color: #ff9900 #ff9900 #ff9900;
 }
 .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
-	background-color: #1f90bb;
+	background-color: #ff9900;
+	border-color: #ff9900 #ff9900 #ff9900;
 	background-position: 0 -15px;
+	
 }
 .btn-warning {
 	color: #ffffff;
@@ -475,7 +479,7 @@ footer h5 {
 .btn-link {
 	border-color: rgba(0, 0, 0, 0);
 	cursor: pointer;
-	color: #23A1D1;
+	color: #ff9900;
 	border-radius: 0;
 }
 .btn-link, .btn-link:active, .btn-link[disabled] {
@@ -489,7 +493,7 @@ footer h5 {
 	background-color: #363636;
 	background-image: linear-gradient(to bottom, #444444, #222222);
 	background-repeat: repeat-x;
-	border-color: #222222 #222222 #000000;
+	border-color: #222222 #222222 #156837;
 }
 .btn-inverse:hover, .btn-inverse:active, .btn-inverse.active, .btn-inverse.disabled, .btn-inverse[disabled] {
 	background-color: #222222;
