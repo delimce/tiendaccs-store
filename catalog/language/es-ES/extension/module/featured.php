@@ -3,4 +3,4 @@
 $_['heading_title'] = 'Destacados';
 
 // Text
-$_['text_tax']      = 'Ex Tax:';
+$_['text_tax']      = 'Ex IVA:';
