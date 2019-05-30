@@ -1,8 +1,10 @@
 <?php
-class ControllerAccountAddress extends Controller {
+class ControllerAccountAddress extends Controller
+{
 	private $error = array();
 
-	public function index() {
+	public function index()
+	{
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/address', '', true);
 
@@ -18,7 +20,8 @@ class ControllerAccountAddress extends Controller {
 		$this->getList();
 	}
 
-	public function add() {
+	public function add()
+	{
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/address', '', true);
 
@@ -38,7 +41,7 @@ class ControllerAccountAddress extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_account_address->addAddress($this->customer->getId(), $this->request->post);
-			
+
 			$this->session->data['success'] = $this->language->get('text_add');
 
 			$this->response->redirect($this->url->link('account/address', '', true));
@@ -47,7 +50,8 @@ class ControllerAccountAddress extends Controller {
 		$this->getForm();
 	}
 
-	public function edit() {
+	public function edit()
+	{
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/address', '', true);
 
@@ -64,7 +68,7 @@ class ControllerAccountAddress extends Controller {
 		$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
 		$this->load->model('account/address');
-		
+
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_account_address->editAddress($this->request->get['address_id'], $this->request->post);
 
@@ -92,7 +96,8 @@ class ControllerAccountAddress extends Controller {
 		$this->getForm();
 	}
 
-	public function delete() {
+	public function delete()
+	{
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/address', '', true);
 
@@ -130,7 +135,8 @@ class ControllerAccountAddress extends Controller {
 		$this->getList();
 	}
 
-	protected function getList() {
+	protected function getList()
+	{
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
 			'href' => $this->url->link('common/home')
@@ -168,7 +174,7 @@ class ControllerAccountAddress extends Controller {
 			if ($result['address_format']) {
 				$format = $result['address_format'];
 			} else {
-				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{city} {postcode}' . "\n" . '{parroquia}' . "\n" . '{municipio}' . "\n" . '{zone}' . "\n" . '{country}';
 			}
 
 			$find = array(
@@ -176,9 +182,11 @@ class ControllerAccountAddress extends Controller {
 				'{lastname}',
 				'{company}',
 				'{address_1}',
-				'{address_2}',
+				//	'{address_2}',
 				'{city}',
 				'{postcode}',
+				'{parroquia}',
+				'{municipio}',
 				'{zone}',
 				'{zone_code}',
 				'{country}'
@@ -189,9 +197,11 @@ class ControllerAccountAddress extends Controller {
 				'lastname'  => $result['lastname'],
 				'company'   => $result['company'],
 				'address_1' => $result['address_1'],
-				'address_2' => $result['address_2'],
+				//	'address_2' => $result['address_2'],
 				'city'      => $result['city'],
 				'postcode'  => $result['postcode'],
+				'parroquia' => $result['parroquia'],
+				'municipio' => $result['municipio'],
 				'zone'      => $result['zone'],
 				'zone_code' => $result['zone_code'],
 				'country'   => $result['country']
@@ -218,7 +228,8 @@ class ControllerAccountAddress extends Controller {
 		$this->response->setOutput($this->load->view('account/address_list', $data));
 	}
 
-	protected function getForm() {
+	protected function getForm()
+	{
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -292,12 +303,24 @@ class ControllerAccountAddress extends Controller {
 			$data['error_zone'] = '';
 		}
 
+		if (isset($this->error['municipio'])) {
+			$data['error_municipio'] = $this->error['municipio'];
+		} else {
+			$data['error_municipio'] = '';
+		}
+
+		if (isset($this->error['parroquia'])) {
+			$data['error_parroquia'] = $this->error['parroquia'];
+		} else {
+			$data['error_parroquia'] = '';
+		}
+
 		if (isset($this->error['custom_field'])) {
 			$data['error_custom_field'] = $this->error['custom_field'];
 		} else {
 			$data['error_custom_field'] = array();
 		}
-		
+
 		if (!isset($this->request->get['address_id'])) {
 			$data['action'] = $this->url->link('account/address/add', '', true);
 		} else {
@@ -366,7 +389,7 @@ class ControllerAccountAddress extends Controller {
 
 		if (isset($this->request->post['country_id'])) {
 			$data['country_id'] = (int)$this->request->post['country_id'];
-		}  elseif (!empty($address_info)) {
+		} elseif (!empty($address_info)) {
 			$data['country_id'] = $address_info['country_id'];
 		} else {
 			$data['country_id'] = $this->config->get('config_country_id');
@@ -374,11 +397,31 @@ class ControllerAccountAddress extends Controller {
 
 		if (isset($this->request->post['zone_id'])) {
 			$data['zone_id'] = (int)$this->request->post['zone_id'];
-		}  elseif (!empty($address_info)) {
+		} elseif (!empty($address_info)) {
 			$data['zone_id'] = $address_info['zone_id'];
 		} else {
 			$data['zone_id'] = '';
 		}
+
+		//municipios
+		if (isset($this->request->post['municipio_id'])) {
+			$data['municipio_id'] = (int)$this->request->post['municipio_id'];
+		} elseif (!empty($address_info)) {
+			$data['municipio_id'] = $address_info['municipio_id'];
+		} else {
+			$data['municipio_id'] = '';
+		}
+
+		//parroquias
+		if (isset($this->request->post['parroquia_id'])) {
+			$data['parroquia_id'] = (int)$this->request->post['parroquia_id'];
+		} elseif (!empty($address_info)) {
+			$data['parroquia_id'] = $address_info['parroquia_id'];
+		} else {
+			$data['parroquia_id'] = '';
+		}
+
+
 
 		$this->load->model('localisation/country');
 
@@ -386,7 +429,7 @@ class ControllerAccountAddress extends Controller {
 
 		// Custom fields
 		$data['custom_fields'] = array();
-		
+
 		$this->load->model('account/custom_field');
 
 		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
@@ -396,7 +439,7 @@ class ControllerAccountAddress extends Controller {
 				$data['custom_fields'][] = $custom_field;
 			}
 		}
-		
+
 		if (isset($this->request->post['custom_field']['address'])) {
 			$data['address_custom_field'] = $this->request->post['custom_field']['address'];
 		} elseif (isset($address_info)) {
@@ -425,7 +468,8 @@ class ControllerAccountAddress extends Controller {
 		$this->response->setOutput($this->load->view('account/address_form', $data));
 	}
 
-	protected function validateForm() {
+	protected function validateForm()
+	{
 		if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
 			$this->error['firstname'] = $this->language->get('error_firstname');
 		}
@@ -458,6 +502,15 @@ class ControllerAccountAddress extends Controller {
 			$this->error['zone'] = $this->language->get('error_zone');
 		}
 
+		if (!isset($this->request->post['municipio_id']) || $this->request->post['municipio_id'] == '' || !is_numeric($this->request->post['municipio_id'])) {
+			$this->error['municipio'] = $this->language->get('error_municipio');
+		}
+
+		if (!isset($this->request->post['parroquia_id']) || $this->request->post['parroquia_id'] == '' || !is_numeric($this->request->post['parroquia_id'])) {
+			$this->error['parroquia'] = $this->language->get('error_parroquia');
+		}
+		
+
 		// Custom field validation
 		$this->load->model('account/custom_field');
 
@@ -476,7 +529,8 @@ class ControllerAccountAddress extends Controller {
 		return !$this->error;
 	}
 
-	protected function validateDelete() {
+	protected function validateDelete()
+	{
 		if ($this->model_account_address->getTotalAddresses() == 1) {
 			$this->error['warning'] = $this->language->get('error_delete');
 		}

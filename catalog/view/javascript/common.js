@@ -22,6 +22,12 @@ function getURLVar(key) {
 	}
 }
 
+function setWithFieldValue(value,field){
+	var contents = $('#'+field); 
+	return (value==="")?contents.val():value;
+
+}
+
 $(document).ready(function() {
 	// Highlight any found errors
 	$('.text-danger').each(function() {

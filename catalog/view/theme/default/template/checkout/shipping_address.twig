@@ -9,18 +9,18 @@
     <select name="address_id" class="form-control">
      {% for address in addresses %}
       {% if address.address_id == address_id %}
-      <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
+      <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.parroquia }},  {{ address.municipio }}, {{ address.zone }}, {{ address.country }}</option>
       {% else %}
-      <option value="{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
+      <option value="{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.parroquia }},  {{ address.municipio }}, {{ address.zone }}, {{ address.country }}</option>
       {% endif %}
       {% endfor %}
     </select>
   </div>
-  <div class="radio">
+  {# <div class="radio">
     <label>
       <input type="radio" name="shipping_address" value="new" />
       {{ text_address_new }}</label>
-  </div>
+  </div> #}
   {% endif %}
   <br />
   <div id="shipping-new" style="display: {% if addresses %}none{% else %}block{% endif %};">

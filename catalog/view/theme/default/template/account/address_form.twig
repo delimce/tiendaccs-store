@@ -92,6 +92,8 @@
               <div class="text-danger">{{ error_country }}</div>
               {% endif %} </div>
           </div>
+
+          {# zones #}
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-zone">{{ entry_zone }}</label>
             <div class="col-sm-10">
@@ -101,6 +103,31 @@
               <div class="text-danger">{{ error_zone }}</div>
               {% endif %} </div>
           </div>
+         
+          {# municipios #}
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-municipio">{{ entry_municipio  }}</label>
+            <div class="col-sm-10">
+              <select name="municipio_id" id="input-municipio" class="form-control">
+              </select>
+              {% if error_municipio  %}
+              <div class="text-danger">{{ error_municipio }}</div>
+              {% endif %} </div>
+          </div>
+
+           {# parroquias #}
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-parroquia">{{ entry_parroquia }}</label>
+            <div class="col-sm-10">
+              <select name="parroquia_id" id="input-parroquia" class="form-control">
+              </select>
+              {% if error_parroquia %}
+              <div class="text-danger">{{ error_parroquia }}</div>
+              {% endif %} </div>
+          </div>
+        
+
+          {# fields behavior #}
           {% for custom_field in custom_fields %}
           {% if custom_field.type == 'select' %}
           <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
@@ -108,7 +135,6 @@
             <div class="col-sm-10">
               <select name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" id="input-custom-field{{ custom_field.custom_field_id }}" class="form-control">
                 <option value="">{{ text_select }}</option>
-                
                 
                 
                       {% for custom_field_value in custom_field.custom_field_value %}
@@ -275,6 +301,10 @@
           <div class="pull-right">
             <input type="submit" value="{{ button_continue }}" class="btn btn-primary" />
           </div>
+          <div>
+            <input id="dev-temp-zone" type="hidden" value="{{ zone_id | default("") }}">
+            <input id="dev-temp-mun" type="hidden" value="{{ municipio_id | default("") }}">
+          </div>
         </div>
       </form>
       {{ content_bottom }}</div>
@@ -414,4 +444,86 @@ $('select[name=\'country_id\']').on('change', function() {
 
 $('select[name=\'country_id\']').trigger('change');
 //--></script> 
+
+<script type="text/javascript"><!--
+$('select[name=\'zone_id\']').on('change', function() {
+	$.ajax({
+		url: 'index.php?route=account/account/zone&zone_id=' + setWithFieldValue(this.value,"dev-temp-zone"),
+		dataType: 'json',
+		beforeSend: function() {
+			$('select[name=\'zone_id\']').prop('disabled', true);
+		},
+		complete: function() {
+			$('select[name=\'zone_id\']').prop('disabled', false);
+		},
+		success: function(json) {
+				
+			html = '<option value="">{{ text_select }}</option>';
+			
+			if (json['municipio'] && json['municipio'] != '') {
+				for (i = 0; i < json['municipio'].length; i++) {
+					html += '<option value="' + json['municipio'][i]['municipio_id'] + '"';
+					
+					if (json['municipio'][i]['municipio_id'] == '{{ municipio_id }}') {
+						html += ' selected="selected"';
+					}
+					
+					html += '>' + json['municipio'][i]['name'] + '</option>';
+				}
+			} else {
+				html += '<option value="0" selected="selected">{{ text_none }}</option>';
+			}
+			
+			$('select[name=\'municipio_id\']').html(html);
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		}
+	});
+});
+
+$('select[name=\'zone_id\']').trigger('change');
+//--></script> 
+
+
+<script type="text/javascript"><!--
+$('select[name=\'municipio_id\']').on('change', function() {
+	$.ajax({
+		url: 'index.php?route=account/account/municipio&municipio_id=' + setWithFieldValue(this.value,"dev-temp-mun"),
+		dataType: 'json',
+		beforeSend: function() {
+			$('select[name=\'municipio_id\']').prop('disabled', true);
+		},
+		complete: function() {
+			$('select[name=\'municipio_id\']').prop('disabled', false);
+		},
+		success: function(json) {
+				
+			html = '<option value="">{{ text_select }}</option>';
+			
+			if (json['parroquia'] && json['parroquia'] != '') {
+				for (i = 0; i < json['parroquia'].length; i++) {
+					html += '<option value="' + json['parroquia'][i]['parroquia_id'] + '"';
+					
+					if (json['parroquia'][i]['parroquia_id'] == '{{ parroquia_id }}') {
+						html += ' selected="selected"';
+					}
+					
+					html += '>' + json['parroquia'][i]['name'] + '</option>';
+				}
+			} else {
+				html += '<option value="0" selected="selected">{{ text_none }}</option>';
+			}
+			
+			$('select[name=\'parroquia_id\']').html(html);
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		}
+	});
+});
+
+$('select[name=\'municipio_id\']').trigger('change');
+//--></script> 
+
 {{ footer }}

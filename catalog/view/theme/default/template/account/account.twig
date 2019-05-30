@@ -17,6 +17,8 @@
     {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
+    {# add new address button #}
+    <input id="dev-new-address" type="button" value="Añadir Dirección" class="btn btn-primary">
       <h2>{{ text_my_account }}</h2>
       <ul class="list-unstyled">
         <li><a href="{{ edit }}">{{ text_edit }}</a></li>
@@ -59,4 +61,10 @@
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
+<script type="text/javascript"><!--
+// Sort the custom fields
+$('#dev-new-address').on("click",function(){
+  window.location.href = 'index.php?route=account/address/add';
+})
+//--></script>
 {{ footer }}
