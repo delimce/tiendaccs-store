@@ -1,6 +1,8 @@
 <?php
-class ControllerCheckoutConfirm extends Controller {
-	public function index() {
+class ControllerCheckoutConfirm extends Controller
+{
+	public function index()
+	{
 		$redirect = '';
 
 		if ($this->cart->hasShipping()) {
@@ -113,7 +115,7 @@ class ControllerCheckoutConfirm extends Controller {
 					$order_data['store_url'] = HTTP_SERVER;
 				}
 			}
-			
+
 			$this->load->model('account/customer');
 
 			if ($this->customer->isLogged()) {
@@ -176,6 +178,13 @@ class ControllerCheckoutConfirm extends Controller {
 				$order_data['shipping_country_id'] = $this->session->data['shipping_address']['country_id'];
 				$order_data['shipping_address_format'] = $this->session->data['shipping_address']['address_format'];
 				$order_data['shipping_custom_field'] = (isset($this->session->data['shipping_address']['custom_field']) ? $this->session->data['shipping_address']['custom_field'] : array());
+
+				//new addresss fields
+				$order_data['shipping_municipio'] = $this->session->data['shipping_address']['municipio'];
+				$order_data['shipping_municipio_id'] = $this->session->data['shipping_address']['municipio_id'];
+				$order_data['shipping_parroquia'] = $this->session->data['shipping_address']['parroquia'];
+				$order_data['shipping_parroquia_id'] = $this->session->data['shipping_address']['parroquia_id'];
+
 
 				if (isset($this->session->data['shipping_method']['title'])) {
 					$order_data['shipping_method'] = $this->session->data['shipping_method']['title'];

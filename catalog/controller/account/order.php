@@ -199,7 +199,7 @@ class ControllerAccountOrder extends Controller {
 			if ($order_info['shipping_address_format']) {
 				$format = $order_info['shipping_address_format'];
 			} else {
-				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{parroquia}'  . "\n" . '{municipio}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 			}
 
 			$find = array(
@@ -207,7 +207,8 @@ class ControllerAccountOrder extends Controller {
 				'{lastname}',
 				'{company}',
 				'{address_1}',
-				'{address_2}',
+				'{parroquia}',
+				'{municipio}',
 				'{city}',
 				'{postcode}',
 				'{zone}',
@@ -220,7 +221,8 @@ class ControllerAccountOrder extends Controller {
 				'lastname'  => $order_info['shipping_lastname'],
 				'company'   => $order_info['shipping_company'],
 				'address_1' => $order_info['shipping_address_1'],
-				'address_2' => $order_info['shipping_address_2'],
+				'parroquia' => $order_info['shipping_parroquia'],
+				'municipio' => $order_info['shipping_municipio'],
 				'city'      => $order_info['shipping_city'],
 				'postcode'  => $order_info['shipping_postcode'],
 				'zone'      => $order_info['shipping_zone'],

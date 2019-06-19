@@ -75,6 +75,8 @@ class ModelAccountOrder extends Model {
 				'shipping_address_2'      => $order_query->row['shipping_address_2'],
 				'shipping_postcode'       => $order_query->row['shipping_postcode'],
 				'shipping_city'           => $order_query->row['shipping_city'],
+				'shipping_municipio'      => $order_query->row['shipping_municipio'],
+				'shipping_parroquia'      => $order_query->row['shipping_parroquia'],
 				'shipping_zone_id'        => $order_query->row['shipping_zone_id'],
 				'shipping_zone'           => $order_query->row['shipping_zone'],
 				'shipping_zone_code'      => $shipping_zone_code,
