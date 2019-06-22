@@ -5,6 +5,7 @@ $_['text_order'] 	=  'información del pedido';
 $_['text_order_detail'] 	=  'Detalles de la orden';
 $_['text_invoice_no'] 	=  'Factura no.:';
 $_['text_order_id'] 	=  'Solicitar ID:';
+$_['text_order_payment_report'] 	=  'Reportar Pago';
 $_['text_date_added'] 	=  'Fecha Agregada:';
 $_['text_shipping_address'] 	=  'Dirección de Envío';
 $_['text_shipping_method'] 	=  'Método de envío:';

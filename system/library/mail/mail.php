@@ -1,7 +1,11 @@
 <?php
+
 namespace Mail;
-class Mail {
-	public function send() {
+
+class Mail
+{
+	public function send()
+	{
 		if (is_array($this->to)) {
 			$to = implode(',', $this->to);
 		} else {
@@ -13,16 +17,23 @@ class Mail {
 		$header  = 'MIME-Version: 1.0' . PHP_EOL;
 		$header .= 'Date: ' . date('D, d M Y H:i:s O') . PHP_EOL;
 		$header .= 'From: =?UTF-8?B?' . base64_encode($this->sender) . '?= <' . $this->from . '>' . PHP_EOL;
-		
+
+		///add bcc method
+		if ($this->bcc) {
+			$bcc = $this->bcc;
+			$header .= "Bcc: " . $bcc . PHP_EOL;
+		}
+
 		if (!$this->reply_to) {
 			$header .= 'Reply-To: =?UTF-8?B?' . base64_encode($this->sender) . '?= <' . $this->from . '>' . PHP_EOL;
 		} else {
 			$header .= 'Reply-To: =?UTF-8?B?' . base64_encode($this->reply_to) . '?= <' . $this->reply_to . '>' . PHP_EOL;
 		}
-		
+
 		$header .= 'Return-Path: ' . $this->from . PHP_EOL;
 		$header .= 'X-Mailer: PHP/' . phpversion() . PHP_EOL;
 		$header .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . PHP_EOL . PHP_EOL;
+
 
 		if (!$this->html) {
 			$message  = '--' . $boundary . PHP_EOL;

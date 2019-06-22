@@ -1,6 +1,8 @@
 <?php
-class ControllerAccountOrder extends Controller {
-	public function index() {
+class ControllerAccountOrder extends Controller
+{
+	public function index()
+	{
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/order', '', true);
 
@@ -10,13 +12,13 @@ class ControllerAccountOrder extends Controller {
 		$this->load->language('account/order');
 
 		$this->document->setTitle($this->language->get('heading_title'));
-		
+
 		$url = '';
 
 		if (isset($this->request->get['page'])) {
 			$url .= '&page=' . $this->request->get['page'];
 		}
-		
+
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -28,7 +30,7 @@ class ControllerAccountOrder extends Controller {
 			'text' => $this->language->get('text_account'),
 			'href' => $this->url->link('account/account', '', true)
 		);
-		
+
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
 			'href' => $this->url->link('account/order', $url, true)
@@ -85,7 +87,8 @@ class ControllerAccountOrder extends Controller {
 		$this->response->setOutput($this->load->view('account/order_list', $data));
 	}
 
-	public function info() {
+	public function info()
+	{
 		$this->load->language('account/order');
 
 		if (isset($this->request->get['order_id'])) {
@@ -334,13 +337,82 @@ class ControllerAccountOrder extends Controller {
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 
+			$data["status_id"] = $order_info['order_status_id'];
+			$data["button_payment_report"] = $this->language->get('text_order_payment_report');
+			$data["order_status"] = $this->settingOrderStatus($data["status_id"]);
+
+			$data["order_total"] = number_format($order_info['total'], 2, ",", ".");
+			///banks
+			$data['banks'] = $this->getBanks();
+			//accounts
+			$data['accounts'] = $this->getBankAccounts();
+
 			$this->response->setOutput($this->load->view('account/order_info', $data));
 		} else {
 			return new Action('error/not_found');
 		}
 	}
 
-	public function reorder() {
+
+	private function getBanks()
+	{
+		$banks = $this->model_account_order->getBanks();
+		$bankArray = [];
+		foreach ($banks as $bank) {
+			$bankArray[] = ["name" => $bank['name'], "id" => $bank['bank_id']];
+		}
+		return $bankArray;
+	}
+
+	private function getBankAccounts()
+	{
+		$accounts = $this->model_account_order->getBankAccounts();
+		$accountArray = [];
+		foreach ($accounts as $account) {
+			$accountArray[] = ["name" => $account['name'], "id" => $account['id'], "number" => $account['number']];
+		}
+		return $accountArray;
+	}
+
+
+	private function settingOrderStatus($statusId)
+	{
+
+		$status = ["pending" => "", "reported" => "", "processed" => "", "transit" => "", "completed" => ""];
+		switch ($statusId) {
+			case 1:
+				$status["pending"] = "active";
+				break;
+			case 9:
+				$status["pending"] = "visited";
+				$status["reported"] = "active";
+				break;
+			case 2:
+			case 15:
+				$status["pending"] = "visited";
+				$status["reported"] = "visited";
+				$status["processed"] = "active";
+				break;
+			case 12:
+				$status["pending"] = "visited";
+				$status["reported"] = "visited";
+				$status["processed"] = "visited";
+				$status["transit"] = "active";
+				break;
+			case 5:
+				$status["pending"] = "visited";
+				$status["reported"] = "visited";
+				$status["processed"] = "visited";
+				$status["transit"] = "visited";
+				$status["completed"] = "active";
+				break;
+		}
+
+		return $status;
+	}
+
+	public function reorder()
+	{
 		$this->load->language('account/order');
 
 		if (isset($this->request->get['order_id'])) {
@@ -399,5 +471,104 @@ class ControllerAccountOrder extends Controller {
 		}
 
 		$this->response->redirect($this->url->link('account/order/info', 'order_id=' . $order_id));
+	}
+
+	/**
+	 * order payment method
+	 */
+	public function paymentReport()
+	{
+
+		$this->load->language('account/order');
+		$this->load->model('account/order');
+
+		$paymentData = [];
+		$paymentData["file"] = "";
+		$paymentData["order_id"] = $this->request->post['order_id'];
+		$paymentData["type"] = ($this->request->post['type'] == "movil") ? 4 : 3;
+		$paymentData["date"] = $this->request->post['date'];
+		$paymentData["account"] = $this->request->post['account'];
+		$paymentData["bank_id"] = $this->request->post['bank_id'];
+		$paymentData["reference"] = $this->request->post['reference'];
+		$paymentData["comments"] = (isset($this->request->post['comments'])) ? $this->request->post['comments'] : "";
+		$order_info = $this->model_account_order->getOrder($paymentData["order_id"]);
+
+		///upload payment file, if it exists
+		if (isset($this->request->files['file']) && $this->request->files['file']['name'] != "") {
+
+			// Check to see if any PHP files are trying to be uploaded
+			$content = file_get_contents($this->request->files['file']['tmp_name']);
+
+			if (preg_match('/\<\?php/i', $content)) {
+				$error = 'TYPE OF FILE NOT VALID';
+				throw new Exception($error);
+			}
+
+			$filename = basename(preg_replace('/[^a-zA-Z0-9\.\-\s+]/', '', html_entity_decode($this->request->files['file']['name'], ENT_QUOTES, 'UTF-8')));
+			$file = $filename . '.' . token(32);
+			move_uploaded_file($this->request->files['file']['tmp_name'], DIR_UPLOAD . $file);
+			$paymentData["file"] = $file;
+		}
+
+		//SAVE ORDER
+		$this->model_account_order->savePayment($order_info, $paymentData);
+		$paymentInfo = $this->model_account_order->getPaymentByOrderId($paymentData["order_id"]);
+
+		///SEND EMAILS
+		$this->paymentReportEmail($order_info, $paymentInfo);
+	}
+
+
+	private function paymentReportEmail($orderInfo, $paymentData)
+	{
+		$mail = new Mail($this->config->get('config_mail_engine'));
+		$mail->parameter = $this->config->get('config_mail_parameter');
+		$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+		$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+		$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+		$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+		$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+
+		$mail->setTo($orderInfo['email']);
+		$mail->setBcc($this->config->get('config_email'));
+		$mail->setFrom($this->config->get('config_email'));
+		$mail->setReplyTo($this->config->get('config_email'));
+		$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+		$mail->setSubject("Reporte del pago Orden:{$orderInfo['order_id']} satisfactorio");
+
+		////build message
+		$msg = "<p>Gracias por tu pago, ya nuestro equipo recibió los datos de tu reporte y estará en el
+				proceso de validación del mismo, estaremos poniéndonos en contacto contigo dentro
+				de un lapso de 48 horas</p>";
+		$msg .= "<h1>Detalles del pago</h1><br>";
+		$msg .= "<b>Cliente</b>:&nbsp;{$paymentData['customer']}<br>";
+		$msg .= "<b>Cliente Email</b>:&nbsp;{$paymentData['customer_email']}<br>";
+		$msg .= "<b>Cliente TLF</b>:&nbsp;{$paymentData['customer_tlf']}<br>";
+		$msg .= "<b>Orden</b>:&nbsp;{$orderInfo['order_id']}<br>";
+		$msg .= "<b>Cuenta destino</b>:&nbsp;{$paymentData['account']}<br>";
+		$msg .= "<b>Banco origen</b>:&nbsp;{$paymentData['origin']}<br>";
+		$msg .= "<b>Número de referencia</b>:&nbsp;{$paymentData['reference']}<br>";
+		$msg .= "<b>Fecha de pago/transferencia</b>:&nbsp;{$paymentData['date']}<br>";
+		$reported = date("Y-m-d");
+		$msg .= "<b>Fecha de reporte</b>:&nbsp;$reported<br>";
+		$total = number_format($orderInfo['total'], 2, ".", ",");
+		$msg .= "<b>Monto del pago</b>:&nbsp;$total<br>";
+		$msg .= "<b>Comentarios</b>:&nbsp;{$paymentData['comments']}<br>";
+		$mail->setHtml($msg);
+
+		if (!empty($paymentData['file'])) {
+			$phyname = DIR_UPLOAD . $paymentData['file'];
+			$temp_name = DIR_UPLOAD . substr($paymentData['file'], 0, -33);
+			copy($phyname, $temp_name);
+			$mail->AddAttachment($temp_name);
+		}
+
+		$mail->send();
+
+		if (isset($temp_name)) 
+		{
+			//unlink($phyname); todo:maybe we cant delete it too
+			unlink($temp_name);
+		}
 	}
 }

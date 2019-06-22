@@ -1,165 +1,374 @@
 {{ header }}
-<div id="account-order" class="container">
-  <ul class="breadcrumb">
-    {% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-    {% endfor %}
-  </ul>
-  {% if success %}
-  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-  </div>
-  {% endif %}
-  {% if error_warning %}
-  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-  </div>
-  {% endif %}
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
-    {% else %}
-    {% set class = 'col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <h2>{{ heading_title }}</h2>
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <td class="text-left" colspan="2">{{ text_order_detail }}</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left" style="width: 50%;">{% if invoice_no %} <b>{{ text_invoice_no }}</b> {{ invoice_no }}<br />
-              {% endif %} <b>{{ text_order_id }}</b> #{{ order_id }}<br />
-              <b>{{ text_date_added }}</b> {{ date_added }}</td>
-            <td class="text-left" style="width: 50%;">{% if payment_method %} <b>{{ text_payment_method }}</b> {{ payment_method }}<br />
-              {% endif %}
-              {% if shipping_method %} <b>{{ text_shipping_method }}</b> {{ shipping_method }} {% endif %}</td>
-          </tr>
-        </tbody>
-      </table>
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <td class="text-left" style="width: 50%; vertical-align: top;">{{ text_payment_address }}</td>
-            {% if shipping_address %}
-            <td class="text-left" style="width: 50%; vertical-align: top;">{{ text_shipping_address }}</td>
-            {% endif %} </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left">{{ payment_address }}</td>
-            {% if shipping_address %}
-            <td class="text-left">{{ shipping_address }}</td>
-            {% endif %} </tr>
-        </tbody>
-      </table>
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <td class="text-left">{{ column_name }}</td>
-              <td class="text-left">{{ column_model }}</td>
-              <td class="text-right">{{ column_quantity }}</td>
-              <td class="text-right">{{ column_price }}</td>
-              <td class="text-right">{{ column_total }}</td>
-              {% if products %}
-              <td style="width: 20px;"></td>
-              {% endif %} </tr>
-          </thead>
-          <tbody>
-          
-          {% for product in products %}
-          <tr>
-            <td class="text-left">{{ product.name }}
-              {% for option in product.option %} <br />
-              &nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}</td>
-            <td class="text-left">{{ product.model }}</td>
-            <td class="text-right">{{ product.quantity }}</td>
-            <td class="text-right">{{ product.price }}</td>
-            <td class="text-right">{{ product.total }}</td>
-            <td class="text-right" style="white-space: nowrap;">{% if product.reorder %} <a href="{{ product.reorder }}" data-toggle="tooltip" title="{{ button_reorder }}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i></a> {% endif %} <a href="{{ product.return }}" data-toggle="tooltip" title="{{ button_return }}" class="btn btn-danger"><i class="fa fa-reply"></i></a></td>
-          </tr>
-          {% endfor %}
-          {% for voucher in vouchers %}
-          <tr>
-            <td class="text-left">{{ voucher.description }}</td>
-            <td class="text-left"></td>
-            <td class="text-right">1</td>
-            <td class="text-right">{{ voucher.amount }}</td>
-            <td class="text-right">{{ voucher.amount }}</td>
-            {% if products %}
-            <td></td>
-            {% endif %} </tr>
-          {% endfor %}
-            </tbody>
-          
-          <tfoot>
-          
-          {% for total in totals %}
-          <tr>
-            <td colspan="3"></td>
-            <td class="text-right"><b>{{ total.title }}</b></td>
-            <td class="text-right">{{ total.text }}</td>
-            {% if products %}
-            <td></td>
-            {% endif %} </tr>
-          {% endfor %}
-            </tfoot>
-          
-        </table>
-      </div>
-      {% if comment %}
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <td class="text-left">{{ text_comment }}</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left">{{ comment }}</td>
-          </tr>
-        </tbody>
-      </table>
-      {% endif %}
-      {% if histories %}
-      <h3>{{ text_history }}</h3>
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <td class="text-left">{{ column_date_added }}</td>
-            <td class="text-left">{{ column_status }}</td>
-            <td class="text-left">{{ column_comment }}</td>
-          </tr>
-        </thead>
-        <tbody>
-        
-        {% if histories %}
-        {% for history in histories %}
-        <tr>
-          <td class="text-left">{{ history.date_added }}</td>
-          <td class="text-left">{{ history.status }}</td>
-          <td class="text-left">{{ history.comment }}</td>
-        </tr>
+<div class="container" id="account-order">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li>
+                <a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+            </li>
         {% endfor %}
+    </ul>
+    {% if success %}
+        <div class="alert alert-success alert-dismissible">
+            <i class="fa fa-check-circle"></i>
+            {{ success }}
+            <button class="close" data-dismiss="alert" type="button">&times;</button>
+        </div>
+    {% endif %}
+    {% if error_warning %}
+        <div class="alert alert-danger alert-dismissible">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ error_warning }}
+            <button class="close" data-dismiss="alert" type="button">&times;</button>
+        </div>
+    {% endif %}
+    <div class="row">{{ column_left }}
+        {% if column_left and column_right %}
+            {% set class = 'col-sm-6' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'col-sm-9' %}
         {% else %}
-        <tr>
-          <td colspan="3" class="text-center">{{ text_no_results }}</td>
-        </tr>
+            {% set class = 'col-sm-12' %}
         {% endif %}
-          </tbody>
-        
-      </table>
-      {% endif %}
-      <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
-      </div>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+        <div id="content" class="{{ class }}">{{ content_top }}
+            <h2>{{ heading_title }}</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <td class="text-left" colspan="2">{{ text_order_detail }}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-left" style="width: 50%;">
+                            {% if invoice_no %}
+                                <b>{{ text_invoice_no }}</b>
+                                {{ invoice_no }}<br/>
+                            {% endif %}
+                            <b>{{ text_order_id }}</b>
+                            #{{ order_id }}<br/>
+                            <b>{{ text_date_added }}</b>
+                            {{ date_added }}</td>
+                        <td class="text-left" style="width: 50%;">
+                            {% if payment_method %}
+                                <b>{{ text_payment_method }}</b>
+                                {{ payment_method }}<br/>
+                            {% endif %}
+                            {% if shipping_method %}
+                                <b>{{ text_shipping_method }}</b>
+                                {{ shipping_method }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <td class="text-left" style="width: 50%; vertical-align: top;">{{ text_payment_address }}</td>
+                        {% if shipping_address %}
+                            <td class="text-left" style="width: 50%; vertical-align: top;">{{ text_shipping_address }}</td>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-left">{{ payment_address }}</td>
+                        {% if shipping_address %}
+                            <td class="text-left">{{ shipping_address }}</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td class="text-left">{{ column_name }}</td>
+                            <td class="text-left">{{ column_model }}</td>
+                            <td class="text-right">{{ column_quantity }}</td>
+                            <td class="text-right">{{ column_price }}</td>
+                            <td class="text-right">{{ column_total }}</td>
+                            {% if products %}
+                                <td style="width: 20px;"></td>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for product in products %}
+                            <tr>
+                                <td class="text-left">{{ product.name }}
+                                    {% for option in product.option %}
+                                        <br/>
+                                        &nbsp;<small>
+                                            -
+                                            {{ option.name }}:
+                                            {{ option.value }}</small>
+                                    {% endfor %}
+                                </td>
+                                <td class="text-left">{{ product.model }}</td>
+                                <td class="text-right">{{ product.quantity }}</td>
+                                <td class="text-right">{{ product.price }}</td>
+                                <td class="text-right">{{ product.total }}</td>
+                                <td class="text-right" style="white-space: nowrap;">
+                                    {% if product.reorder %}
+                                        <a href="{{ product.reorder }}" data-toggle="tooltip" title="{{ button_reorder }}" class="btn btn-primary">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ product.return }}" data-toggle="tooltip" title="{{ button_return }}" class="btn btn-danger">
+                                        <i class="fa fa-reply"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% for voucher in vouchers %}
+                            <tr>
+                                <td class="text-left">{{ voucher.description }}</td>
+                                <td class="text-left"></td>
+                                <td class="text-right">1</td>
+                                <td class="text-right">{{ voucher.amount }}</td>
+                                <td class="text-right">{{ voucher.amount }}</td>
+                                {% if products %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                    <tfoot>
+
+                        {% for total in totals %}
+                            <tr>
+                                <td colspan="3"></td>
+                                <td class="text-right">
+                                    <b>{{ total.title }}</b>
+                                </td>
+                                <td class="text-right">{{ total.text }}</td>
+                                {% if products %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tfoot>
+
+                </table>
+            </div>
+            {% if comment %}
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td class="text-left">{{ text_comment }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-left">{{ comment }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <div class="checkout-wrap" style="padding: 0 0 45px 0;">
+                <ul class="checkout-bar">
+                    <li class="{{order_status["pending"]}}">Pendiente</li>
+                    <li class="{{order_status["reported"]}}">Pago Reportado</li>
+                    <li class="{{order_status["processed"]}}">Pago Procesado</li>
+                    <li class="{{order_status["transit"]}}">En tránsito</li>
+                    <li class="{{order_status["completed"]}}">Completada</li>
+                </ul>
+            </div>
+
+            <p>&nbsp</p>
+
+            {% if histories %}
+                <h3>{{ text_history }}</h3>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td class="text-left">{{ column_date_added }}</td>
+                            <td class="text-left">{{ column_status }}</td>
+                            <td class="text-left">{{ column_comment }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% if histories %}
+                            {% for history in histories %}
+                                <tr>
+                                    <td class="text-left">{{ history.date_added }}</td>
+                                    <td class="text-left">{{ history.status }}</td>
+                                    <td class="text-left">{{ history.comment }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td class="text-center" colspan="3">{{ text_no_results }}</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+
+                </table>
+            {% endif %}
+            <div class="buttons clearfix">
+                {% if status_id in [1,9] %}
+                    <div class="pull-left">
+                        <button class="btn btn-success" id="dev-report" type="button">{{ button_payment_report }}</button>
+                    </div>
+                {% endif %}
+                <div class="pull-right">
+                    <a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a>
+                </div>
+            </div>
+            {{ content_bottom }}</div>
+        {{ column_right }}</div>
 </div>
+
+<!-- Modal -->
+<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="dev-report-form" role="dialog" tabindex="-1">
+    <form enctype="multipart/form-data" id="dev-form-payment" method="post" name="dev-form-payment">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Reportar pago Orden Nª
+                        {{order_id}}</h3>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <input checked="true" class="form-check-input" id="inlineRadio1" name="operationType" type="radio" value="transferencia">
+                            <label class="form-check-label" for="inlineRadio1">Transferencia</label>&nbsp
+                            <input class="form-check-input" id="inlineRadio2" name="operationType" type="radio" value="movil">
+                            <label class="form-check-label" for="inlineRadio2">Pago Móvil</label>
+                        </div>
+
+                        <div>
+                            <h4 id="dev-rep-type">Transferencia Bancaria</h4>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cuenta Destino</label>
+                            <select class="form-control" id="account" name="input-custom-field">
+                                {% for account in accounts %}
+                                    <option value="{{account.id}}">{{account.name}}
+                                        {{account.number}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="dev-bank-01">
+                            <label for="input-custom-field">Banco Origen</label>
+                            <select class="form-control" id="dev-payment-bank" name="dev-payment-bank">
+                                <option value="">Seleccione</option>
+                                {% for bank in banks %}
+                                    <option value="{{bank.id}}">{{bank.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Numero de referencia</label>
+                            <input class="form-control" id="reference" placeholder="referencia" required type="text">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <label>Fecha del pago</label>
+                                <input class="form-control" id="date" placeholder="fecha" required type="date">
+                            </div>
+                            <div class="col-xs-7">
+                                <label>Comentarios</label>
+                                <input class="form-control" id="comments" placeholder="" type="text">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <label>Monto Total</label>
+                                <input id="amount" class="form-control" value="{{order_total}}" placeholder="0.00" readonly="true" type="text">
+                            </div>
+                            <div class="col-xs-7">
+                                <label>Adjuntar archivo</label>
+                                <input accept=".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx,.txt,.pdf" class="form-control" id="uploadFile" type="file">
+                            </div>
+                        </div>
+                        <input id="order_id" type="hidden" value="{{order_id}}">
+                    </fieldset>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Cerrar</button>
+                    <button class="btn btn-primary" type="submit" id="save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Modal -->
+
+<script type="text/javascript">
+    $("#dev-report").on("click", function () {
+        $('#dev-report-form').modal('show')
+    })
+
+    $("#inlineRadio2").on("click", function () {
+        $("#dev-bank-01").hide();
+    })
+
+    $("#inlineRadio1").on("click", function () {
+        $("#dev-bank-01").show();
+    })
+
+
+    $("#dev-form-payment").on("submit", function (event) {
+        event.preventDefault();
+        let type = $("#dev-form-payment input[type='radio']:checked").val();
+        let transf = $("#dev-form-payment #dev-payment-bank").val();
+        // / origin bank validation
+        if (type === "transferencia" && transf == "") {
+            alert("Debe seleccionar un Banco de origen");
+            return false;
+        }
+
+        let formData = new FormData();
+        formData.append('type', $("#dev-form-payment input[type='radio']:checked").val());
+        formData.append('order_id', $("#dev-form-payment #order_id").val());
+        formData.append('bank_id', $("#dev-form-payment #dev-payment-bank").val());
+        formData.append('account', $("#dev-form-payment #account").val());
+        formData.append('reference', $("#dev-form-payment #reference").val());
+        formData.append('comments', $("#dev-form-payment #comments").val());
+        formData.append('amount', $("#dev-form-payment #amount").val());
+        formData.append('date', $("#dev-form-payment #date").val());
+
+        // /getting image file default undefined
+        let file = $('#uploadFile')[0].files[0];
+        if (file != 'undefined') {
+            formData.append("file", file);
+        }
+
+
+        $.ajax({
+            url: 'index.php?route=account/order/paymentReport',
+            type: "post",
+            dataType: "html",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend : function(data){
+              $("#dev-form-payment #save").html('Enviando...')
+            },
+            complete: function(){
+                $("#dev-form-payment #save").html('Terminado!')
+            },
+            success: function (data) {
+             //   console.log(data)
+              history.go(0);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+    })
+</script>
+
 {{ footer }}
