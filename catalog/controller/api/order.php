@@ -1,6 +1,8 @@
 <?php
-class ControllerApiOrder extends Controller {
-	public function add() {
+class ControllerApiOrder extends Controller
+{
+	public function add()
+	{
 		$this->load->language('api/order');
 
 		$json = array();
@@ -95,7 +97,7 @@ class ControllerApiOrder extends Controller {
 
 			if (!$json) {
 				$json['success'] = $this->language->get('text_success');
-				
+
 				$order_data = array();
 
 				// Store Details
@@ -160,7 +162,7 @@ class ControllerApiOrder extends Controller {
 					$order_data['shipping_municipio'] = $this->session->data['shipping_address']['municipio'];
 					$order_data['shipping_municipio_id'] = $this->session->data['shipping_address']['municipio_id'];
 					$order_data['shipping_parroquia'] = $this->session->data['shipping_address']['parroquia'];
-					$order_data['shipping_parroquia_id'] = $this->session->data['shipping_address']['parroquia_id'];			
+					$order_data['shipping_parroquia_id'] = $this->session->data['shipping_address']['parroquia_id'];
 
 
 					if (isset($this->session->data['shipping_method']['title'])) {
@@ -257,7 +259,7 @@ class ControllerApiOrder extends Controller {
 					'taxes'  => &$taxes,
 					'total'  => &$total
 				);
-			
+
 				$sort_order = array();
 
 				$results = $this->model_setting_extension->getExtensions('total');
@@ -271,7 +273,7 @@ class ControllerApiOrder extends Controller {
 				foreach ($results as $result) {
 					if ($this->config->get('total_' . $result['code'] . '_status')) {
 						$this->load->model('extension/total/' . $result['code']);
-						
+
 						// We have to put the totals in an array so that they pass by reference.
 						$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
 					}
@@ -357,7 +359,7 @@ class ControllerApiOrder extends Controller {
 				}
 
 				$this->model_checkout_order->addOrderHistory($json['order_id'], $order_status_id);
-				
+
 				// clear cart since the order has already been successfully stored.
 				$this->cart->clear();
 			}
@@ -367,7 +369,8 @@ class ControllerApiOrder extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function edit() {
+	public function edit()
+	{
 		$this->load->language('api/order');
 
 		$json = array();
@@ -472,7 +475,7 @@ class ControllerApiOrder extends Controller {
 
 				if (!$json) {
 					$json['success'] = $this->language->get('text_success');
-					
+
 					$order_data = array();
 
 					// Store Details
@@ -536,7 +539,7 @@ class ControllerApiOrder extends Controller {
 						$order_data['shipping_municipio'] = $this->session->data['shipping_address']['municipio'];
 						$order_data['shipping_municipio_id'] = $this->session->data['shipping_address']['municipio_id'];
 						$order_data['shipping_parroquia'] = $this->session->data['shipping_address']['parroquia'];
-						$order_data['shipping_parroquia_id'] = $this->session->data['shipping_address']['parroquia_id'];			
+						$order_data['shipping_parroquia_id'] = $this->session->data['shipping_address']['parroquia_id'];
 
 
 						if (isset($this->session->data['shipping_method']['title'])) {
@@ -626,14 +629,14 @@ class ControllerApiOrder extends Controller {
 					$totals = array();
 					$taxes = $this->cart->getTaxes();
 					$total = 0;
-					
+
 					// Because __call can not keep var references so we put them into an array. 
 					$total_data = array(
 						'totals' => &$totals,
 						'taxes'  => &$taxes,
 						'total'  => &$total
 					);
-			
+
 					$sort_order = array();
 
 					$results = $this->model_setting_extension->getExtensions('total');
@@ -647,7 +650,7 @@ class ControllerApiOrder extends Controller {
 					foreach ($results as $result) {
 						if ($this->config->get('total_' . $result['code'] . '_status')) {
 							$this->load->model('extension/total/' . $result['code']);
-							
+
 							// We have to put the totals in an array so that they pass by reference.
 							$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
 						}
@@ -697,7 +700,7 @@ class ControllerApiOrder extends Controller {
 					} else {
 						$order_status_id = $this->config->get('config_order_status_id');
 					}
-					
+
 					$this->model_checkout_order->addOrderHistory($order_id, $order_status_id);
 				}
 			} else {
@@ -709,7 +712,8 @@ class ControllerApiOrder extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function delete() {
+	public function delete()
+	{
 		$this->load->language('api/order');
 
 		$json = array();
@@ -735,12 +739,13 @@ class ControllerApiOrder extends Controller {
 				$json['error'] = $this->language->get('error_not_found');
 			}
 		}
-		
+
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function info() {
+	public function info()
+	{
 		$this->load->language('api/order');
 
 		$json = array();
@@ -771,7 +776,8 @@ class ControllerApiOrder extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function history() {
+	public function history()
+	{
 		$this->load->language('api/order');
 
 		$json = array();
@@ -814,5 +820,57 @@ class ControllerApiOrder extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * method to expire orders with 72 hours created
+	 */
+	public function expireOrders()
+	{
+		$this->load->model('checkout/order');
+		$ordersToExpire = $this->model_checkout_order->getOrdersToExpire();
+
+		if (count($ordersToExpire) > 0) {
+			array_walk($ordersToExpire, function ($order) {
+				//updating order
+				$this->model_checkout_order->expireOrder($order);
+				//expire email
+				$this->expireSendEmail($order);
+			});
+		}
+
+		//die;
+		$json = ["test" => $ordersToExpire];
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+
+	public function expireSendEmail($order)
+	{
+
+		$mail = new Mail($this->config->get('config_mail_engine'));
+		$mail->parameter = $this->config->get('config_mail_parameter');
+		$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+		$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+		$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+		$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+		$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+
+		$mail->setTo($order['email']);
+		$mail->setBcc($this->config->get('config_email'));
+		$mail->setFrom($this->config->get('config_email'));
+		$mail->setReplyTo($this->config->get('config_email'));
+		$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+		$mail->setSubject("SU ORDEN:{$order['order_id']} ha sido expirada");
+
+		////build message
+		$msg = "<p>Saludos {$order['firstname']} {$order['lastname']}, La orden número {$order['order_id']} ha 
+		sido expirada por no tener pago reportado en las pasadas 72 horas, en caso de que el pago ya halla sido realizado, por favor, ponerse en contacto con nosotros.</p>";
+		$msg .= "<b>Saludos cordiales</b><br>";
+
+		$mail->setHtml($msg);
+
+		$mail->send();
 	}
 }
