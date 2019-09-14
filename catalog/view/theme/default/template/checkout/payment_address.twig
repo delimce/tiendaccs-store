@@ -198,11 +198,20 @@
     {% endfor %}
   </div>
   <div class="buttons clearfix">
+   <div class="pull-left">
+      <input type="button" value="{{ button_address_new }}" data-loading-text="{{ text_loading }}" class="btn btn-primary button-new-address" />
+   </div>
     <div class="pull-right">
       <input type="button" value="{{ button_continue }}" id="button-payment-address" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
     </div>
   </div>
 </form>
+
+<script>
+  $('.button-new-address').on('click',function(){
+   window.location.href = "index.php?route=account/address/add";
+  })
+</script>
 <script type="text/javascript"><!--
 $('input[name=\'payment_address\']').on('change', function() {
 	if (this.value == 'new') {

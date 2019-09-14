@@ -198,6 +198,9 @@
     {% endfor %}
   </div>
   <div class="buttons clearfix">
+   <div class="pull-left">
+      <input type="button" value="{{ button_address_new }}" data-loading-text="{{ text_loading }}" class="btn btn-primary button-new-address" />
+   </div>
     <div class="pull-right">
       <input type="button" value="{{ button_continue }}" id="button-shipping-address" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
     </div>
@@ -214,6 +217,13 @@ $('input[name=\'shipping_address\']').on('change', function() {
 	}
 });
 //--></script>
+
+<script>
+  $('.button-new-address').on('click',function(){
+   window.location.href = "index.php?route=account/address/add";
+  })
+</script>
+
 <script type="text/javascript"><!--
 $('#collapse-shipping-address .form-group[data-sort]').detach().each(function() {
 	if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('#collapse-shipping-address .form-group').length-2) {

@@ -1,11 +1,15 @@
 <?php
 class ControllerCheckoutSuccess extends Controller {
+	private $orderId;
+
 	public function index() {
 		$this->load->language('checkout/success');
 
 		if (isset($this->session->data['order_id'])) {
 			$this->cart->clear();
 
+			$this->orderId = $this->session->data['order_id'];
+			
 			unset($this->session->data['shipping_method']);
 			unset($this->session->data['shipping_methods']);
 			unset($this->session->data['payment_method']);
@@ -45,7 +49,9 @@ class ControllerCheckoutSuccess extends Controller {
 		);
 
 		if ($this->customer->isLogged()) {
-			$data['text_message'] = sprintf($this->language->get('text_customer'), $this->url->link('account/account', '', true), $this->url->link('account/order', '', true), $this->url->link('account/download', '', true), $this->url->link('information/contact'));
+	
+			$data['text_order_success'] = sprintf($this->language->get('text_order_success'),intval($this->orderId));
+			$data['text_message'] = sprintf($this->language->get('text_customer'), $this->url->link('account/order', '', true), $this->url->link('account/order', '', true), $this->url->link('account/download', '', true), $this->url->link('information/contact'));
 		} else {
 			$data['text_message'] = sprintf($this->language->get('text_guest'), $this->url->link('information/contact'));
 		}
