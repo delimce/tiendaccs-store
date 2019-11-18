@@ -244,6 +244,15 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);	
 			}
+
+			////served zones
+			if ($this->user->hasPermission('access', 'sale/order')) {
+				$sale[] = array(
+					'name'	   => $this->language->get('text_zones'),
+					'href'     => $this->url->link('sale/served', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()		
+				);	
+			}
 			
 			if ($this->user->hasPermission('access', 'sale/recurring')) {	
 				$sale[] = array(

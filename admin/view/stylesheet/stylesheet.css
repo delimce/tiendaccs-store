@@ -802,3 +802,12 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 .opencart-icon-cart-mini:before {
 	content: "\e91c";
 }
+
+.served-to-select{
+	padding: 15px 15px 10px 5px;
+	max-width: 380px;
+	border: #000 1px solid;
+	background: #EEEEEE;
+	font-size: 12px;
+
+}

@@ -39,6 +39,7 @@ $_['text_manufacturer'] 	=  'Fabricantes';
 $_['text_navigation'] 	=  'Navegación';
 $_['text_option'] 	=  'Opciones';
 $_['text_order'] 	=  'Pedidos';
+$_['text_zones'] 	=  'Zonas servidas';
 $_['text_order_status'] 	=  'Estado de la orden';
 $_['text_online'] 	=  'Quién está en línea';
 $_['text_product'] 	=  'Productos';
