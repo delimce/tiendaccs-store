@@ -26,36 +26,50 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					<i class="fa fa-list"></i>
-					{{served_title}}</h3>
+					{{served_title}}
+				</h3>
 			</div>
+
+			<div class="served-info">
+				Para Seleccionar una zona servida, sólo agregar el estado, municipio o parroquia usando el ícono (+)<br>
+				Para eliminar la zona servida, en el panel de la izquierda hacer uso del ícono (-) 
+			</div>
+
 			<div class="panel-body">
 				{% set tempZoneId = 0 %}
-				<div class="served-to-select">
+				<div class="served-container served-to-select">
 					<div class="tree">
 						<ul>
 							{% for item in localization %}
 								{# zones #}
 								{% if tempZoneId != item.zone_id %}
-									<li>
-										<span data-level="zone" data-id="{{item.zone_id}}">
+									<li class="zs-zone item-{{item.z_display}}">
+										<span class="zone-level">
 											{{item.zone}}
 										</span>
+										<span data-level="estado" data-name="{{item.zone}}" data-id="{{item.zone_id}}"
+										 title="agregar zona servida" class="add-item">(+)</span>
 									{% endif %}
 									{# municipios #}
 									<ul>
-										<li>
-											<span data-level="mun" data-id="{{item.municipio_id}}">
+										<li class="item-{{item.m_display}}">
+											<span class="mun-level">
 												{{item.mun}}
 											</span>
+											<span  data-level="municipio" data-name="{{item.mun}}" data-id="{{item.municipio_id}}"
+												 title="agregar zona servida" class="add-item">(+)</span>
 											{% set parroquias = item.parroquia|split(',') %}
 											{# parroquias #}
 											<ul>
 												{% for par in parroquias %}
-													<li>
-                                                        {% set myPar = par|split('-')  %}
-														<span data-level="par" data-id="{{myPar[0]}}">
+												   {% set myPar = par|split('-')  %}
+													<li class="item-{{myPar[2]}}">
+														<span class="par-level">
 															{{myPar[1]}}
+															
 														</span>
+														<span data-level="parroquia" data-name="{{myPar[1]}}" data-id="{{myPar[0]}}"
+														 title="agregar zona servida" class="add-item">(+)</span>
 													</li>
 												{% endfor %}
 											</ul>
@@ -71,37 +85,114 @@
 						</ul>
 					</div>
 				</div>
-				<div class="served-selected"></div>
+				<div class="served-container served-selected">
+					<div class="tree">
+						<div class="served-info">
+							Zonas servidas seleccionadas
+						</div>
+						{% if served %}
+							<ul>
+								{% for item2 in served %}
+									<li>
+										<span data-id="{{item2.id}}">
+											{{item2.level}}	{{item2.name}}
+											<span title="eliminar zona servida" class="remove-item">(-)</span>
+										</span>	
+										<br>
+									</li>
+								{% endfor %}
+								<ul>
+								{% else %}
+									{{no_served_selected}}
+							{% endif %}
+
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<script>
-		$(document).ready(function () {
+		<script>
 
-$(".tree li").each(function () {
-if ($(this).children("ul").length > 0) {
-$(this).addClass("parent");
-}
+	$.extend({
+			getUrlVars: function(){
+				var vars = [], hash;
+				var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+				for(var i = 0; i < hashes.length; i++)
+				{
+					hash = hashes[i].split('=');
+					vars.push(hash[0]);
+					vars[hash[0]] = hash[1];
+				}
+				return vars;
+			},
+   		getUrlVar: function(name){
+        return $.getUrlVars()[name];
+		}
+	});	
+
+$(document).ready(function () {
+
+	$(".tree li").each(function () {
+	 if ($(this).children("ul").length > 0) {
+	    $(this).addClass("parent");
+	  }
+	});
+
+	$(".tree li.parent > span").click(function () {
+	$(this).parent().toggleClass("active");
+	$(this).parent().children("ul").slideToggle("fast");
+	});
+
+	$(window).load(function () { // Run code
+	$(".tree li").each(function () {
+	$(this).toggleClass("active");
+	$(this).children("ul").slideToggle("fast");
+	});
+	});
+
+	// add to served zone
+	$('.add-item').on('click', function () {
+		let me = $(this);
+		let name = me.data('name');
+		let level = me.data('level');
+		let id = me.data('id');
+			$.ajax({
+				url: 'index.php?route=sale/served/add&user_token='+$.getUrlVar('user_token'),
+				type: 'post',
+				dataType: 'json',
+				data: {'name':name,'level':level,'level_id':id},
+				cache: false
+			});
+			removeItem(me)
+		})
+
+
+		$('.remove-item').on('click', function () {
+		let me = $(this);
+		let id = me.parent().data('id');
+			$.ajax({
+				url: 'index.php?route=sale/served/remove&user_token='+$.getUrlVar('user_token'),
+				type: 'post',
+				dataType: 'json',
+				data: {'served_id':id},
+				cache: false,
+				success: function (json) {
+						console.log(json)
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					console.log(thrownError)
+				}
+			});
+		})
 });
 
-$(".tree li.parent > span").click(function () {
-$(this).parent().toggleClass("active");
 
-$(this).parent().children("ul").slideToggle("fast");
-});
+	const removeItem = function(item){
+		item.parent().removeClass('item-show').addClass('item-hide');
+	}
 
-
-$(window).load(function () { // Run code
-
-$(".tree li").each(function () {
-$(this).toggleClass("active");
-$(this).children("ul").slideToggle("fast");
-});
-});
-
-});
-	</script>
+		</script>
 
 
-	{{ footer }}
+		{{ footer }}

@@ -803,11 +803,79 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 	content: "\e91c";
 }
 
-.served-to-select{
-	padding: 15px 15px 10px 5px;
-	max-width: 380px;
+
+.served-info, .served-container{
+	margin: 10px 35px 10px 15px;
+	padding: 15px 25px 10px 17px;
+}
+
+.served-info{
+	font-weight: bold;
+}
+
+.served-container{
+	width: 380px;
+	min-height: 250px;
 	border: #000 1px solid;
 	background: #EEEEEE;
 	font-size: 12px;
-
+	float: left;
+	position: relative;
 }
+
+.served-selected{
+	position: fixed;
+	margin-left: 460px;
+}
+
+.zone-level{
+	font-weight: bold;
+	display: inline-block;
+	width: 92%;
+	border-bottom: 2px solid;
+	cursor: pointer;
+	line-height: 31px;
+}
+
+.mun-level{
+	display: inline-block;
+	width: 86%;
+	border-bottom: 1px solid;
+	cursor: pointer;
+	margin-left: 8px;
+	line-height: 29px;
+}
+
+.par-level{
+	display: inline-block;
+	font-weight: bold;
+	width: 80%;
+	border-bottom: 0.7px solid;
+	margin-left: 16px;
+	line-height: 29px;
+}
+
+.tree ul {
+	padding: 6px 5px 3px 5px; 
+	min-width: 300px;
+	line-height: 20px;
+	list-style-type: none;
+   }
+
+   .add-item, .remove-item {
+	   cursor: pointer;
+	   font-size: 15px;
+	   float: right;
+	   padding: 0;
+   }
+
+   .remove-item {
+	color:red;
+	font-size: 19px;
+	display: block;
+
+   }
+
+   .item-hide{
+	display:none;  
+  }
