@@ -84,13 +84,44 @@ class ControllerSaleServed extends Controller
         return implode(",", $result);
     }
 
+    public function servedList()
+    {
+        $this->load->model('sale/served');
+        $served = $this->model_sale_served->getServedZones();
+        $servedForm = '<div class="price-served">Precio por Kg.</div><br>';
+        $servedForm .= '<ul>';
+        array_walk($served, function ($item) use (&$servedForm) {
+            $servedForm .= '<li>
+                            <span class="served-item">
+                                <span style="float:left">' . $item["level"] . ' ' . $item["name"] . '</span>
+                                <span style="float:right" data-id="' . $item["id"] . '" data-level="' . $item["level"] . '" data-name="' . $item["name"] . '">
+                                    <input class="shipping-price-input" type="number" value="' . $item["price_kg"] . '"/> 
+                                    <span title="eliminar zona servida" class="remove-item">(-)</span>
+                                </span>
+                            </span>	
+                            <br>
+                        </li>';
+        });
+
+        $servedForm .= '</ul>';
+        $servedForm .= '<div>
+                            <br>
+                            <input class="btn btn-primary" id="save-prices" name="save-prices"  type="submit" value="Guardar"/>
+                            <span style="float:right;text-align:center;font-weight:bold" class="save-message"></span>
+                        </div>';
+        return $servedForm;
+    }
 
     public function add()
     {
+
+        $this->load->model('setting/setting');
+        $price = $this->model_setting_setting->getSettingValue('default_price', 0);
+
         $this->load->model('sale/served');
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-            $this->model_sale_served->addServedZone($this->request->post);
-            return true;
+            $this->model_sale_served->addServedZone($this->request->post, $price);
+            echo $this->servedList();
         }
         return false;
     }
@@ -100,6 +131,18 @@ class ControllerSaleServed extends Controller
         $this->load->model('sale/served');
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
             $this->model_sale_served->removeServedZone($this->request->post);
+            return true;
+        }
+        return false;
+    }
+
+    public function updatePrice()
+    {
+        if ($this->request->server['REQUEST_METHOD'] == 'PUT') {
+            $this->load->model('sale/served');
+            $id = $this->request->put('id');
+            $price = $this->request->put('price');
+            $this->model_sale_served->updateServedPriceKG($id, $price);
             return true;
         }
         return false;

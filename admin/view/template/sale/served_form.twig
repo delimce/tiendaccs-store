@@ -32,7 +32,7 @@
 
 			<div class="served-info">
 				Para Seleccionar una zona servida, sólo agregar el estado, municipio o parroquia usando el ícono (+)<br>
-				Para eliminar la zona servida, en el panel de la izquierda hacer uso del ícono (-) 
+				Para eliminar la zona servida, en el panel de la derecha hacer uso del ícono (-) 
 			</div>
 
 			<div class="panel-body">
@@ -90,31 +90,42 @@
 						<div class="served-info">
 							Zonas servidas seleccionadas
 						</div>
-						{% if served %}
-							<ul>
-								{% for item2 in served %}
-									<li>
-										<span data-id="{{item2.id}}">
-											{{item2.level}}	{{item2.name}}
-											<span title="eliminar zona servida" class="remove-item">(-)</span>
-										</span>	
-										<br>
-									</li>
-								{% endfor %}
+						<form id="served">
+							{% if served %}
+								<div class="price-served">Precio por Kg.</div><br>
 								<ul>
-								{% else %}
-									{{no_served_selected}}
-							{% endif %}
+									{% for item2 in served %}
+										<li>
+											<span class="served-item">
+												<span style="float:left">{{item2.level}} {{item2.name}} </span>
+												<span style="float:right" data-id="{{item2.id}}" data-level="{{item2.level}}" data-name="{{item2.name}}">
+													<input class="shipping-price-input" type="number" value="{{item2.price_kg}}"/> 
+													<span title="eliminar zona servida" class="remove-item">(-)</span>
+												</span>
+											</span>	
+										</li>
+									{% endfor %}
+								<ul>
 
+								<div><br>
+									<input class="btn btn-primary" id="save-prices" name="save-prices"  type="submit" value="Guardar"/>
+									<span style="float:right;text-align:center;font-weight:bold" class="save-message"></span>
+								</div>
+
+							{% else %}
+										{{no_served_selected}}
+							{% endif %}
+						</form>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<script>
+<script>
 
-	$.extend({
+
+$.extend({
 			getUrlVars: function(){
 				var vars = [], hash;
 				var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -131,8 +142,9 @@
 		}
 	});	
 
-$(document).ready(function () {
 
+  (function($) {
+	
 	$(".tree li").each(function () {
 	 if ($(this).children("ul").length > 0) {
 	    $(this).addClass("parent");
@@ -157,42 +169,79 @@ $(document).ready(function () {
 		let name = me.data('name');
 		let level = me.data('level');
 		let id = me.data('id');
-			$.ajax({
-				url: 'index.php?route=sale/served/add&user_token='+$.getUrlVar('user_token'),
-				type: 'post',
-				dataType: 'json',
-				data: {'name':name,'level':level,'level_id':id},
-				cache: false
-			});
-			removeItem(me)
-		})
 
+		if (window.confirm(`¿Desea agregar ${level}: ${name} cómo zona servida?`)) { 
+				$.post('index.php?route=sale/served/add&user_token='+$.getUrlVar('user_token'),
+				{'name':name,'level':level,'level_id':id}).done(function(response)
+				{
+					$("#served").html(response);
+				});
+				removeItem(me);
 
-		$('.remove-item').on('click', function () {
+		}
+	})
+	
+		
+		$(document.body).on('click', '.remove-item', function () {
 		let me = $(this);
 		let id = me.parent().data('id');
-			$.ajax({
-				url: 'index.php?route=sale/served/remove&user_token='+$.getUrlVar('user_token'),
-				type: 'post',
-				dataType: 'json',
-				data: {'served_id':id},
-				cache: false,
-				success: function (json) {
-						console.log(json)
-				},
-				error: function (xhr, ajaxOptions, thrownError) {
-					console.log(thrownError)
-				}
-			});
+		let name = me.parent().data('name');
+		let level = me.parent().data('level');
+			if (window.confirm(`¿Desea eliminar ésta zona servida?`)) { 
+				$.post('index.php?route=sale/served/remove&user_token='+$.getUrlVar('user_token'),
+				{'served_id':id}).done(function(response)
+				{
+					return true;
+				});
+
+				let myItem = $('.add-item').filter('[data-name="'+name+'"][data-level="'+level+'"]');
+				showItem(myItem)
+				me.parent().parent().hide();
+			}		
 		})
-});
 
 
-	const removeItem = function(item){
+		$(document.body).on('click', '#save-prices', function (event) {
+			 event.preventDefault();
+			let myForm = $("#served").serialize();
+			$(".save-message").html("Precios guardados con éxito");
+
+		})
+
+		$(document.body).on('keyup', '.shipping-price-input', function (event) {
+			let me = $(this);
+			let name = me.parent().data('name');
+			let level = me.parent().data('level');
+			let id = me.parent().data('id');	
+			let price = me.val();	
+			$.ajax({
+				url: 'index.php?route=sale/served/updatePrice&user_token='+$.getUrlVar('user_token'),
+				type: 'PUT',
+				data:{'id':id,'price':price},
+				success: function(result) {
+					// Do something with the result
+					return true;
+				}
+			});	
+		})
+
+
+
+
+
+  }(jQuery));
+
+  	const removeItem = function(item){
 		item.parent().removeClass('item-show').addClass('item-hide');
 	}
 
-		</script>
+	const showItem = function(item){
+		item.parent().removeClass('item-hide').addClass('item-show');
+	}
 
 
-		{{ footer }}
+</script>	  
+
+
+
+{{ footer }}

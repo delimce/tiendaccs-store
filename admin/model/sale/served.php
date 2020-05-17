@@ -2,7 +2,6 @@
 class ModelSaleServed extends Model
 {
 
-    const PRICE_KG = 10000;                 
 
     /**
      * @return array
@@ -16,7 +15,7 @@ class ModelSaleServed extends Model
         z.`name` AS zone,
         m.municipio_id,
         m.`name` AS mun,
-    GROUP_CONCAT(p.parroquia_id,'-',p.`name`)	 AS parroquia 
+    GROUP_CONCAT(p.parroquia_id,'-',p.`name`) AS parroquia 
     FROM
         oc_zone AS z
         INNER JOIN op_municipio AS m ON z.zone_id = m.zone_id
@@ -45,13 +44,18 @@ class ModelSaleServed extends Model
     }
 
 
-    public function addServedZone($data)
+    public function updateServedPriceKG($id,$price)
+    {
+        $this->db->query("UPDATE op_served_zone SET price_kg = " . floatval($price) . " WHERE id = ".$id."");
+    }
+
+    public function addServedZone($data,$price)
     {
         $this->db->query("INSERT INTO op_served_zone SET
          level = '" . $this->db->escape($data['level']) . "',
          level_id = '" . $this->db->escape($data['level_id']) . "',
          name = '" . $this->db->escape($data['name']) . "',
-         price_kg = '" . self::PRICE_KG . "',
+         price_kg = " . floatval($price) . ",
          date_added = NOW()");
 
         return $this->db->getLastId();
