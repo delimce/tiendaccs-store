@@ -1,15 +1,15 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://zserver/tiendaccs/');
+define('HTTP_SERVER', 'http://dev.tiendaccs.com/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://zserver/tiendaccs/');
+define('HTTPS_SERVER', 'http://dev.tiendaccs.com/');
 
 // DIR
-define('DIR_APPLICATION', '/var/www/tiendaccs/catalog/');
-define('DIR_SYSTEM', '/var/www/tiendaccs/system/');
-define('DIR_IMAGE', '/var/www/tiendaccs/image/');
-define('DIR_STORAGE', DIR_SYSTEM . 'storage/');
+define('DIR_APPLICATION', '/var/www/html/tiendaccs/catalog/');
+define('DIR_SYSTEM', '/var/www/html/tiendaccs/system/');
+define('DIR_IMAGE', '/var/www/html/tiendaccs/image/');
+define('DIR_STORAGE', '/var/www/html/tiendaccs/system/storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');
