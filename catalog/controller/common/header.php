@@ -6,6 +6,11 @@ class ControllerCommonHeader extends Controller
 		// Analytics
 		$this->load->model('setting/extension');
 
+		//ves price 
+		$this->load->library('opcurrency');
+		$this->opcurrency->setPrice();
+
+
 		$data['analytics'] = array();
 
 		$analytics = $this->model_setting_extension->getExtensions('analytics');
