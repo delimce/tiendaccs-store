@@ -44,18 +44,18 @@ class ModelSaleServed extends Model
     }
 
 
-    public function updateServedPriceKG($id,$price)
+    public function updateServedPriceKG($id, $price)
     {
-        $this->db->query("UPDATE op_served_zone SET price_kg = " . floatval($price) . " WHERE id = ".$id."");
+        $this->db->query("UPDATE op_served_zone SET price_kg = " . $this->db->escape($price) . " WHERE id = " . $id);
     }
 
-    public function addServedZone($data,$price)
+    public function addServedZone($data, $price)
     {
         $this->db->query("INSERT INTO op_served_zone SET
          level = '" . $this->db->escape($data['level']) . "',
          level_id = '" . $this->db->escape($data['level_id']) . "',
          name = '" . $this->db->escape($data['name']) . "',
-         price_kg = " . floatval($price) . ",
+         price_kg = 0.0,
          date_added = NOW()");
 
         return $this->db->getLastId();

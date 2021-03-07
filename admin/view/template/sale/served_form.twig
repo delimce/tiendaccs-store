@@ -216,7 +216,7 @@ $.extend({
 			let price = me.val();	
 			$.ajax({
 				url: 'index.php?route=sale/served/updatePrice&user_token='+$.getUrlVar('user_token'),
-				type: 'PUT',
+				type: 'POST',
 				data:{'id':id,'price':price},
 				success: function(result) {
 					// Do something with the result

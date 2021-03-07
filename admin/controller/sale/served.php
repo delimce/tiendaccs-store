@@ -138,10 +138,10 @@ class ControllerSaleServed extends Controller
 
     public function updatePrice()
     {
-        if ($this->request->server['REQUEST_METHOD'] == 'PUT') {
+        if ($this->request->server['REQUEST_METHOD'] == 'POST') {
             $this->load->model('sale/served');
-            $id = $this->request->put('id');
-            $price = $this->request->put('price');
+            $id = $this->request->post['id'];
+            $price = $this->request->post['price'];
             $this->model_sale_served->updateServedPriceKG($id, $price);
             return true;
         }
