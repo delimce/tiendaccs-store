@@ -459,7 +459,7 @@ class ModelCheckoutOrder extends Model
 	 */
 	public function getOrdersToExpire()
 	{
-		$max_hours = 72;
+		$max_hours = 48;
 		$sql = "SELECT
 					*
 					FROM

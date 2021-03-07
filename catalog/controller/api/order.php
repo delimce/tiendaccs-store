@@ -839,7 +839,6 @@ class ControllerApiOrder extends Controller
 			});
 		}
 
-		//die;
 		$json = ["test" => $ordersToExpire];
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
@@ -866,7 +865,7 @@ class ControllerApiOrder extends Controller
 
 		////build message
 		$msg = "<p>Saludos {$order['firstname']} {$order['lastname']}, La orden número {$order['order_id']} ha 
-		sido expirada por no tener pago reportado en las pasadas 72 horas, en caso de que el pago ya halla sido realizado, por favor, ponerse en contacto con nosotros.</p>";
+		sido expirada por no tener pago reportado en las pasadas 48 horas, en caso de que el pago ya haya sido realizado, por favor, ponerse en contacto con nosotros.</p>";
 		$msg .= "<b>Saludos cordiales</b><br>";
 
 		$mail->setHtml($msg);
