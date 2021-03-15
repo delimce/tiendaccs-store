@@ -58,6 +58,8 @@ $_['entry_postcode'] 	=  'Código postal';
 $_['entry_city'] 	=  'Ciudad';
 $_['entry_country'] 	=  'País';
 $_['entry_zone'] 	=  'Región / Estado';
+$_['entry_parroquia'] 	=  'Parroquia';
+$_['entry_municipio'] 	=  'Municipio';
 $_['entry_newsletter'] 	=  'Deseo suscribirme al boletín de noticias de %s.';
 $_['entry_shipping'] 	=  'Mis direcciones de entrega y facturación son las mismas.';
 $_['error_warning'] 	=  'Se produjo un problema al tratar de procesar su pedido. Si el problema persiste, prueba a seleccionar un método de pago diferente o puedes ponerte en contacto con el propietario de la tienda <a href="%s"> haciendo clic aquí </a>.';
@@ -83,3 +85,5 @@ $_['error_no_shipping'] 	=  'Advertencia: No Opciones de envío están disponibl
 $_['error_payment'] 	=  'Advertencia: ¡Se requiere el método de pago!';
 $_['error_no_payment'] 	=  'Advertencia: No hay opciones de pago disponibles. <a href="%s"> póngase en contacto con nosotros </a> para obtener ayuda!';
 $_['error_custom_field'] 	=  'Se requiere %s!';
+$_['error_parroquia'] 	=  'Por favor, seleccione una Parroquia';
+$_['error_municipio'] 	=  'Por favor, seleccione un municipio';

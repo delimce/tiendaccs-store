@@ -25,6 +25,18 @@ class ControllerCheckoutPaymentAddress extends Controller {
 			$data['zone_id'] = '';
 		}
 
+		if (isset($this->error['municipio'])) {
+			$data['error_municipio'] = $this->error['municipio'];
+		} else {
+			$data['error_municipio'] = '';
+		}
+
+		if (isset($this->error['parroquia'])) {
+			$data['error_parroquia'] = $this->error['parroquia'];
+		} else {
+			$data['error_parroquia'] = '';
+		}
+
 		$this->load->model('localisation/country');
 
 		$data['countries'] = $this->model_localisation_country->getCountries();
@@ -132,6 +144,14 @@ class ControllerCheckoutPaymentAddress extends Controller {
 
 				if (!isset($this->request->post['zone_id']) || $this->request->post['zone_id'] == '' || !is_numeric($this->request->post['zone_id'])) {
 					$json['error']['zone'] = $this->language->get('error_zone');
+				}
+
+				if (!isset($this->request->post['municipio_id']) || $this->request->post['municipio_id'] == '' || !is_numeric($this->request->post['municipio_id'])) {
+					$json['error']['municipio'] = $this->language->get('error_municipio');
+				}
+		
+				if (!isset($this->request->post['parroquia_id']) || $this->request->post['parroquia_id'] == '' || !is_numeric($this->request->post['parroquia_id'])) {
+					$json['error']['parroquia'] = $this->language->get('error_parroquia');
 				}
 
 				// Custom field validation
